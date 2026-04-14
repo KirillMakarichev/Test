@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TestApp1 Shop</title>
+</head>
+<body>
+<header>
+  <div class="row">
+    <strong>TestApp1 Shop</strong>
+    <span id="userInfo" class="muted">Гость</span>
+  </div>
+  <div class="row">
+    <label for="apiBase">API</label>
+    <input id="apiBase" value="https://localhost:5001" />
+    <button id="btnScrollLogin">Войти</button>
+    <button id="btnLogout" class="btn-danger">Выйти</button>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="card">
+      <h3>Каталог</h3>
+      <div class="row">
+        <input id="searchName" placeholder="Поиск по названию" />
+        <input id="searchCategory" placeholder="Категория" />
+        <select id="sortBy">
+          <option value="name-asc">Название A-Z</option>
+          <option value="name-desc">Название Z-A</option>
+          <option value="price-asc">Цена по возрастанию</option>
+          <option value="price-desc">Цена по убыванию</option>
+        </select>
+        <button id="btnLoadCatalog" class="btn-primary">Обновить</button>
+      </div>
+      <p id="catalogStatus" class="status muted"></p>
+      <div id="catalog" class="catalog"></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <h3>Мои заказы</h3>
+        <button id="btnLoadMyOrders">Показать</button>
+      </div>
+      <div id="myOrders" class="list"></div>
+    </div>
+
+    <div id="managerPanel" class="card" hidden>
+      <h3>Панель менеджера</h3>
+      <p class="muted">Здесь закрыты все админ-операции сервиса.</p>
+
+      <details>
+        <summary>Товары</summary>
+        <div class="row">
+          <input id="mgrProductId" placeholder="ID товара" />
+          <input id="mgrProductName" placeholder="Название" />
+          <input id="mgrProductPrice" type="number" step="0.01" placeholder="Цена" />
+          <input id="mgrProductCategory" placeholder="Категория" />
+          <input id="mgrProductCode" placeholder="Код" />
+        </div>
+        <div class="row">
+          <button id="mgrProductsList">Список</button>
+          <button id="mgrProductGet">Открыть по ID</button>
+          <button id="mgrProductCreate" class="btn-primary">Создать</button>
+          <button id="mgrProductUpdate">Обновить</button>
+          <button id="mgrProductDelete" class="btn-danger">Удалить</button>
+        </div>
+      </details>
+
+      <details>
+        <summary>Клиенты</summary>
+        <div class="row">
+          <input id="mgrCustomerId" placeholder="ID клиента" />
+          <input id="mgrCustomerName" placeholder="Имя" />
+          <input id="mgrCustomerPassword" type="password" placeholder="Пароль" />
+          <input id="mgrCustomerCode" placeholder="Код" />
+          <input id="mgrCustomerAddress" placeholder="Адрес" />
+          <input id="mgrCustomerDiscount" type="number" step="0.01" placeholder="Скидка" />
+          <select id="mgrCustomerRole">
+            <option value="customer">customer</option>
+            <option value="manager">manager</option>
+          </select>
+        </div>
+        <div class="row">
+          <button id="mgrCustomersList">Список</button>
+          <button id="mgrCustomerGet">Открыть по ID</button>
+          <button id="mgrCustomerCreate" class="btn-primary">Создать</button>
+          <button id="mgrCustomerUpdate">Обновить</button>
+          <button id="mgrCustomerDelete" class="btn-danger">Удалить</button>
+        </div>
+      </details>
+
+      <details>
+        <summary>Заказы</summary>
+        <div class="row">
+          <input id="mgrOrderId" placeholder="ID заказа" />
+          <input id="mgrOrderCustomerId" placeholder="ID клиента" />
+          <select id="mgrOrderStatus">
+            <option value="Created">Created</option>
+            <option value="Processing">Processing</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <input id="mgrOrderShipmentDate" type="datetime-local" />
+        </div>
+        <div class="row">
+          <button id="mgrOrdersList">Все заказы</button>
+          <button id="mgrOrderGet">Открыть по ID</button>
+          <button id="mgrOrdersByCustomer">По клиенту</button>
+          <button id="mgrOrdersByStatus">По статусу</button>
+          <button id="mgrOrderConfirm">Подтвердить</button>
+          <button id="mgrOrderClose">Закрыть</button>
+          <button id="mgrOrderDelete" class="btn-danger">Удалить</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <div class="row">
+        <strong>Корзина</strong>
+        <span id="cartCount">0 шт</span>
+      </div>
+      <div id="cart" class="list"></div>
+      <p><strong>Итого: <span id="cartTotal">0.00</span></strong></p>
+      <div class="row">
+        <label for="checkoutShipmentDate">Отгрузка</label>
+        <input id="checkoutShipmentDate" type="datetime-local" />
+      </div>
+      <div class="row">
+        <button id="btnCheckout" class="btn-primary">Оформить заказ</button>
+        <button id="btnClearCart">Очистить</button>
+      </div>
+      <p id="cartStatus" class="status muted"></p>
+    </div>
+
+    <div class="card" id="loginCard">
+      <strong>Вход</strong>
+      <div class="row">
+        <input id="loginName" placeholder="Логин" />
+        <input id="loginPassword" type="password" placeholder="Пароль" />
+        <button id="btnLogin" class="btn-primary">Войти</button>
+      </div>
+      <p id="authStatus" class="status muted"></p>
+    </div>
+
+    <div class="card">
+      <strong>Технический лог</strong>
+      <pre id="result"></pre>
+    </div>
+  </aside>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  const state = {
+    token: localStorage.getItem("token") || "",
+    role: localStorage.getItem("role") || "",
+    userId: localStorage.getItem("userId") || "",
+    userName: localStorage.getItem("userName") || "",
+    products: [],
+    cart: []
+  };
+
+  function baseUrl() {
+    return $("apiBase").value.trim().replace(/\/$/, "");
+  }
+
+  function out(value) {
+    $("result").textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+
+  function text(id, value) {
+    $(id).textContent = value;
+  }
+
+  function toIso(value) {
+    return value ? new Date(value).toISOString() : null;
+  }
+
+  function saveAuth(data) {
+    state.token = data.token || "";
+    state.role = data.role || "";
+    state.userId = data.userId || "";
+    state.userName = data.name || "";
+
+    localStorage.setItem("token", state.token);
+    localStorage.setItem("role", state.role);
+    localStorage.setItem("userId", state.userId);
+    localStorage.setItem("userName", state.userName);
+  }
+
+  function clearAuth() {
+    state.token = "";
+    state.role = "";
+    state.userId = "";
+    state.userName = "";
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+  }
+
+  function refreshAuthUi() {
+    if (!state.token) {
+      text("userInfo", "Гость");
+      $("managerPanel").hidden = true;
+      return;
+    }
+
+    text("userInfo", `${state.userName || "user"} (${state.role || "unknown"})`);
+    $("managerPanel").hidden = String(state.role).toLowerCase() !== "manager";
+  }
+
+  async function api(path, options = {}) {
+    const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+    if (state.token) {
+      headers.Authorization = `Bearer ${state.token}`;
+    }
+
+    const response = await fetch(baseUrl() + path, { ...options, headers });
+    const raw = await response.text();
+    let data = raw;
+
+    try {
+      data = raw ? JSON.parse(raw) : null;
+    } catch {
+      // keep string
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
+    }
+
+    return data;
+  }
+
+  function filteredProducts() {
+    const name = $("searchName").value.trim().toLowerCase();
+    const category = $("searchCategory").value.trim().toLowerCase();
+    const sort = $("sortBy").value;
+
+    const list = state.products.filter((p) => {
+      const byName = !name || p.name.toLowerCase().includes(name);
+      const byCategory = !category || p.category.toLowerCase().includes(category);
+      return byName && byCategory;
+    });
+
+    list.sort((a, b) => {
+      if (sort === "name-asc") return a.name.localeCompare(b.name);
+      if (sort === "name-desc") return b.name.localeCompare(a.name);
+      if (sort === "price-asc") return Number(a.price) - Number(b.price);
+      if (sort === "price-desc") return Number(b.price) - Number(a.price);
+      return 0;
+    });
+
+    return list;
+  }
+
+  function renderCatalog() {
+    const root = $("catalog");
+    root.innerHTML = "";
+    const list = filteredProducts();
+
+    if (list.length === 0) {
+      root.innerHTML = "<p class='muted'>Товары не найдены</p>";
+      return;
+    }
+
+    list.forEach((p) => {
+      const el = document.createElement("div");
+      el.className = "product";
+      el.innerHTML = `
+        <strong>${p.name}</strong>
+        <div class="muted">${p.category}</div>
+        <div>Код: ${p.code}</div>
+        <div><strong>${Number(p.price).toFixed(2)}</strong></div>
+        <div class="row">
+          <input id="qty-${p.id}" type="number" min="1" value="1" />
+          <button data-add="${p.id}" class="btn-primary">В корзину</button>
+        </div>
+      `;
+      root.appendChild(el);
+    });
+
+    root.querySelectorAll("button[data-add]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-add");
+        const qty = Number(document.getElementById(`qty-${id}`)?.value || "1");
+        addToCart(id, qty);
+      });
+    });
+  }
+
+  function addToCart(productId, qty) {
+    if (!Number.isFinite(qty) || qty <= 0) {
+      return;
+    }
+
+    const product = state.products.find((p) => p.id === productId);
+    if (!product) {
+      return;
+    }
+
+    const existing = state.cart.find((c) => c.id === productId);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      state.cart.push({ id: product.id, name: product.name, price: Number(product.price), qty });
+    }
+
+    renderCart();
+  }
+
+  function renderCart() {
+    const root = $("cart");
+    root.innerHTML = "";
+
+    if (state.cart.length === 0) {
+      root.innerHTML = "<div class='muted'>Корзина пуста</div>";
+      text("cartCount", "0 шт");
+      text("cartTotal", "0.00");
+      return;
+    }
+
+    state.cart.forEach((item) => {
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `
+        <div><strong>${item.name}</strong></div>
+        <div class="row">
+          <span>${item.price.toFixed(2)} x ${item.qty}</span>
+          <span>${(item.price * item.qty).toFixed(2)}</span>
+        </div>
+        <div class="row">
+          <button data-op="dec" data-id="${item.id}">-</button>
+          <button data-op="inc" data-id="${item.id}">+</button>
+          <button data-op="rm" data-id="${item.id}" class="btn-danger">Удалить</button>
+        </div>
+      `;
+      root.appendChild(el);
+    });
+
+    root.querySelectorAll("button[data-op]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        const op = btn.getAttribute("data-op");
+        const item = state.cart.find((x) => x.id === id);
+        if (!item) {
+          return;
+        }
+
+        if (op === "inc") item.qty += 1;
+        if (op === "dec") item.qty = Math.max(1, item.qty - 1);
+        if (op === "rm") state.cart = state.cart.filter((x) => x.id !== id);
+        renderCart();
+      });
+    });
+
+    const qty = state.cart.reduce((sum, x) => sum + x.qty, 0);
+    const total = state.cart.reduce((sum, x) => sum + x.qty * x.price, 0);
+    text("cartCount", `${qty} шт`);
+    text("cartTotal", total.toFixed(2));
+  }
+
+  async function loadCatalog() {
+    text("catalogStatus", "Загрузка...");
+    const data = await api("/api/products?page=1&pageSize=100");
+    state.products = data.items || [];
+    text("catalogStatus", `Товаров: ${state.products.length}`);
+    renderCatalog();
+    out(data);
+  }
+
+  async function login() {
+    const data = await api("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        name: $("loginName").value.trim(),
+        password: $("loginPassword").value
+      })
+    });
+
+    saveAuth(data);
+    refreshAuthUi();
+    text("authStatus", `Вход выполнен: ${data.name}`);
+    out(data);
+  }
+
+  async function checkout() {
+    if (!state.token) {
+      text("cartStatus", "Сначала войдите");
+      return;
+    }
+
+    if (state.cart.length === 0) {
+      text("cartStatus", "Корзина пуста");
+      return;
+    }
+
+    const now = new Date();
+    const shipmentDate = toIso($("checkoutShipmentDate").value) || new Date(now.getTime() + 3 * 86400000).toISOString();
+
+    const data = await api("/api/orders", {
+      method: "POST",
+      body: JSON.stringify({
+        orderDate: now.toISOString(),
+        shipmentDate,
+        orderNumber: Date.now() % 1000000000,
+        items: state.cart.map((x) => ({
+          productId: x.id,
+          itemsCount: x.qty,
+          itemPrice: x.price
+        }))
+      })
+    });
+
+    state.cart = [];
+    renderCart();
+    text("cartStatus", "Заказ создан");
+    out(data);
+  }
+
+  async function loadMyOrders() {
+    if (!state.userId) {
+      alert("Сначала войдите");
+      return;
+    }
+
+    const data = await api(`/api/orders/by-customer/${state.userId}?page=1&pageSize=100`);
+    const list = data.items || [];
+    const root = $("myOrders");
+    root.innerHTML = "";
+
+    if (list.length === 0) {
+      root.innerHTML = "<div class='muted'>Заказов нет</div>";
+      out(data);
+      return;
+    }
+
+    list.forEach((o) => {
+      const total = (o.items || []).reduce((sum, i) => sum + Number(i.itemPrice) * Number(i.itemsCount), 0);
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `
+        <div><strong>Заказ #${o.orderNumber}</strong></div>
+        <div>Статус: ${o.status}</div>
+        <div>Отгрузка: ${o.shipmentDate}</div>
+        <div>Сумма: ${total.toFixed(2)}</div>
+      `;
+      root.appendChild(el);
+    });
+
+    out(data);
+  }
+
+  function payloadProduct() {
+    return {
+      name: $("mgrProductName").value.trim(),
+      price: Number($("mgrProductPrice").value),
+      category: $("mgrProductCategory").value.trim(),
+      code: $("mgrProductCode").value.trim()
+    };
+  }
+
+  function payloadCustomerCreate() {
+    return {
+      name: $("mgrCustomerName").value.trim(),
+      password: $("mgrCustomerPassword").value,
+      address: $("mgrCustomerAddress").value.trim(),
+      discount: Number($("mgrCustomerDiscount").value),
+      role: $("mgrCustomerRole").value
+    };
+  }
+
+  function payloadCustomerUpdate() {
+    return {
+      name: $("mgrCustomerName").value.trim(),
+      password: $("mgrCustomerPassword").value,
+      code: $("mgrCustomerCode").value.trim(),
+      address: $("mgrCustomerAddress").value.trim(),
+      discount: Number($("mgrCustomerDiscount").value),
+      role: $("mgrCustomerRole").value
+    };
+  }
+
+  async function safeRun(fn) {
+    try {
+      const result = await fn();
+      if (result !== undefined) {
+        out(result);
+      }
+    } catch (e) {
+      out(e.message || String(e));
+    }
+  }
+
+  function wireManagerActions() {
+    $("mgrProductsList").addEventListener("click", () => safeRun(() => api("/api/products?page=1&pageSize=100")));
+    $("mgrProductGet").addEventListener("click", () => safeRun(() => api(`/api/products/${$("mgrProductId").value.trim()}`)));
+    $("mgrProductCreate").addEventListener("click", () => safeRun(() => api("/api/products", {
+      method: "POST",
+      body: JSON.stringify(payloadProduct())
+    })));
+    $("mgrProductUpdate").addEventListener("click", () => safeRun(() => api(`/api/products/${$("mgrProductId").value.trim()}`, {
+      method: "PUT",
+      body: JSON.stringify(payloadProduct())
+    })));
+    $("mgrProductDelete").addEventListener("click", () => safeRun(() => api(`/api/products/${$("mgrProductId").value.trim()}`, {
+      method: "DELETE"
+    })));
+
+    $("mgrCustomersList").addEventListener("click", () => safeRun(() => api("/api/customers?page=1&pageSize=100")));
+    $("mgrCustomerGet").addEventListener("click", () => safeRun(() => api(`/api/customers/${$("mgrCustomerId").value.trim()}`)));
+    $("mgrCustomerCreate").addEventListener("click", () => safeRun(() => api("/api/customers", {
+      method: "POST",
+      body: JSON.stringify(payloadCustomerCreate())
+    })));
+    $("mgrCustomerUpdate").addEventListener("click", () => safeRun(() => api(`/api/customers/${$("mgrCustomerId").value.trim()}`, {
+      method: "PUT",
+      body: JSON.stringify(payloadCustomerUpdate())
+    })));
+    $("mgrCustomerDelete").addEventListener("click", () => safeRun(() => api(`/api/customers/${$("mgrCustomerId").value.trim()}`, {
+      method: "DELETE"
+    })));
+
+    $("mgrOrdersList").addEventListener("click", () => safeRun(() => api("/api/orders?page=1&pageSize=100")));
+    $("mgrOrderGet").addEventListener("click", () => safeRun(() => api(`/api/orders/${$("mgrOrderId").value.trim()}`)));
+    $("mgrOrdersByCustomer").addEventListener("click", () => safeRun(() =>
+      api(`/api/orders/by-customer/${$("mgrOrderCustomerId").value.trim()}?page=1&pageSize=100`)
+    ));
+    $("mgrOrdersByStatus").addEventListener("click", () => safeRun(() =>
+      api(`/api/orders/by-status?status=${encodeURIComponent($("mgrOrderStatus").value)}&page=1&pageSize=100`)
+    ));
+    $("mgrOrderConfirm").addEventListener("click", () => safeRun(() => api(`/api/orders/${$("mgrOrderId").value.trim()}/confirm`, {
+      method: "PATCH",
+      body: JSON.stringify({ shipmentDate: toIso($("mgrOrderShipmentDate").value) || new Date().toISOString() })
+    })));
+    $("mgrOrderClose").addEventListener("click", () => safeRun(() => api(`/api/orders/${$("mgrOrderId").value.trim()}/close`, {
+      method: "PATCH"
+    })));
+    $("mgrOrderDelete").addEventListener("click", () => safeRun(() => api(`/api/orders/${$("mgrOrderId").value.trim()}`, {
+      method: "DELETE"
+    })));
+  }
+
+  function bindEvents() {
+    $("btnLoadCatalog").addEventListener("click", () => safeRun(loadCatalog));
+    $("searchName").addEventListener("input", renderCatalog);
+    $("searchCategory").addEventListener("input", renderCatalog);
+    $("sortBy").addEventListener("change", renderCatalog);
+
+    $("btnLogin").addEventListener("click", () => safeRun(login));
+    $("btnScrollLogin").addEventListener("click", () => {
+      $("loginCard").scrollIntoView({ behavior: "smooth" });
+      $("loginName").focus();
+    });
+    $("btnLogout").addEventListener("click", () => {
+      clearAuth();
+      refreshAuthUi();
+      text("authStatus", "Вы вышли из системы");
+    });
+
+    $("btnCheckout").addEventListener("click", () => safeRun(checkout));
+    $("btnClearCart").addEventListener("click", () => {
+      state.cart = [];
+      renderCart();
+      text("cartStatus", "Корзина очищена");
+    });
+    $("btnLoadMyOrders").addEventListener("click", () => safeRun(loadMyOrders));
+
+    wireManagerActions();
+  }
+
+  function initDefaults() {
+    const in3days = new Date(Date.now() + 3 * 86400000);
+    $("checkoutShipmentDate").value = in3days.toISOString().slice(0, 16);
+    $("mgrOrderShipmentDate").value = in3days.toISOString().slice(0, 16);
+  }
+
+  function init() {
+    initDefaults();
+    refreshAuthUi();
+    renderCart();
+    bindEvents();
+    safeRun(loadCatalog);
+  }
+
+  init();
+</script>
+</body>
+</html>
